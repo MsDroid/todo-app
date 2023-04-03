@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:todo_app/controller/task_controller.dart';
 import 'package:todo_app/screens/add_task.dart';
+import 'package:todo_app/screens/completed_task.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,6 +29,15 @@ class HomeScreen extends StatelessWidget {
                 );
               },
                 child: Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: (){
+                Get.to(()=> CompletedTasts());
+              },
+              child: const Icon(Icons.task_outlined,),
             ),
           ),
         ],
@@ -57,16 +67,16 @@ class HomeScreen extends StatelessWidget {
           );
           }
       ),
-      bottomSheet: ElevatedButton(
-
-        style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            minimumSize: const Size.fromHeight(50),
+      bottomSheet: Obx(() => controller.checkedArr.isEmpty ? Container(color: Colors.blue,height: 1,) : ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              minimumSize: const Size.fromHeight(50),
+          ),
+          onPressed: (){},
+          child: Text('Complete',style: TextStyle(
+            fontSize: screenSize.width * 0.05,
+          ),),
         ),
-        onPressed: (){},
-        child: Text('Complete',style: TextStyle(
-          fontSize: screenSize.width * 0.05,
-        ),),
       ),
     );
   }

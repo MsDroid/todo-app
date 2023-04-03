@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:todo_app/controller/task_controller.dart';
 
 Widget addTaskmodal() {
+
   var controller = Get.find<TaskController>();
   final _formKey = GlobalKey<FormState>();
+
   return Dialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5),
@@ -12,7 +14,7 @@ Widget addTaskmodal() {
     elevation: 16,
     child: SizedBox(
       width: 12,
-      height: 400,
+      height: 380,
       child: Column(
         children: [
           SizedBox(height: 20),
@@ -36,6 +38,12 @@ Widget addTaskmodal() {
               child: Column(
                 children: [
                   TextFormField(
+                    validator: (value){
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter title';
+                      }
+                      return null;
+                    },
                     controller: controller.taskNameController,
                     style: const TextStyle(
                       fontSize: 16,
@@ -44,7 +52,7 @@ Widget addTaskmodal() {
 
                     decoration: InputDecoration(
                       focusColor: Colors.white,
-                      errorText: "Please enter task name.",
+
 
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -57,10 +65,10 @@ Widget addTaskmodal() {
                       ),
                       fillColor: Colors.grey,
 
-                      hintText: "please enter task name",
+
 
                       //create lable
-                      labelText: 'Task Name',
+                      labelText: 'Title',
                       //lable style
                       labelStyle: const TextStyle(
                         color: Colors.grey,
@@ -73,13 +81,18 @@ Widget addTaskmodal() {
                     height: 20,
                   ),
                   TextFormField(
+                    validator: (value){
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter details';
+                      }
+                      return null;
+                    },
                     controller: controller.taskDescController,
                     keyboardType: TextInputType.multiline,
                     maxLines: 6,
                     decoration: InputDecoration(
-                      errorText: "Please enter task details.",
 
-                      hintText: "please enter details",
+
                       focusedBorder: const OutlineInputBorder(
                           borderSide:
                               BorderSide(width: 1, color: Colors.blue),
@@ -103,9 +116,21 @@ Widget addTaskmodal() {
                     height: 20,
                   ),
                   controller.isLoading.value ? const CircularProgressIndicator() : ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
+
                       if (_formKey.currentState!.validate()) {
+                        FocusManager.instance.primaryFocus?.unfocus();
                         controller.isLoading.value = true;
+                        var res = await controller.addTask();
+                        if(res){
+                          print(res);
+                          controller.isLoading.value = false;
+                          Get.snackbar('Success', 'Task Added',snackPosition: SnackPosition.TOP,);
+                        }else{
+                          print('failed');
+                          Get.snackbar('Failed', 'Please try again !',snackPosition: SnackPosition.TOP,);
+                          controller.isLoading.value = false;
+                        }
                       }
                     },
                     child: const Text('Submit'),
